@@ -152,7 +152,11 @@ collect_paths /private/var/db/diagnostics/*
 msg 'Clearing System Log Files...'
 remove_paths
 
+collect_paths /usr/local/amazon/var/acme/cache
+collect_paths /opt/homebrew/Caskroom
+collect_paths /opt/amazon-kinesistap/var/update
 collect_paths $HOME/.cache/*
+collect_paths $HOME/Library/Caches/*
 msg 'Clearing Other Cache Files...'
 remove_paths
 
@@ -165,6 +169,8 @@ remove_paths
 
 if [ -d ~/Library/Application\ Support/Google/Chrome/ ]; then
   collect_paths ~/Library/Application\ Support/Google/Chrome/Default/WebStorage/*
+  collect_paths ~/Library/Application\ Support/Google/Chrome/Default/Service\ Worker/CacheStorage/*
+  collect_paths ~/Library/Application\ Support/Google/Chrome/component_crx_cache
   collect_paths ~/Library/Caches/Google/Chrome/Default/Cache
   msg 'Clearing Google Chrome Cache Files...'
   remove_paths
@@ -253,6 +259,9 @@ fi
 
 # Disables extended regex
 # shopt -u extglob
+
+PASS=`security find-generic-password -a ${USER} -s brew_cu -w`
+sudo -S -v <<< $PASS
 
 if [ -z "$dry_run" ]; then
   msg "${GREEN}Success!${NOFORMAT}"
